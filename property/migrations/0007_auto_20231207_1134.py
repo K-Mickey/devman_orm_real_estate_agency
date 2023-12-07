@@ -12,6 +12,13 @@ def fill_pure_numbers(apps, schema_editor):
             flat.save()
 
 
+def move_backward(apps, schema_editor):
+    Flat = apps.get_model('property', 'Flat')
+    for flat in Flat.objects.all():
+        flat.owner_pure_phone = None
+        flat.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -19,5 +26,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(fill_pure_numbers),
+        migrations.RunPython(fill_pure_numbers, move_backward),
     ]
