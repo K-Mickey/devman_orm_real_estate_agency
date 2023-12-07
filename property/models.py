@@ -60,11 +60,27 @@ class Flat(models.Model):
     def __str__(self):
         return f'{self.town}, {self.address} ({self.price}р.)'
 
+    class Meta:
+        verbose_name = 'Квартира'
+        verbose_name_plural = 'Квартиры'
+
 
 class Complaint(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE, related_name='complaints')
     text = models.TextField()
+    created_at = models.DateTimeField(
+        'Когда создано жалоба',
+        default=timezone.now,
+        db_index=True)
+
+    def __str__(self):
+        return f'{self.author}: {self.text[:20]}'
+
+    class Meta:
+        verbose_name = 'Жалоба'
+        verbose_name_plural = 'Жалобы'
+        ordering = ['-created_at']
 
 
 class Owner(models.Model):
@@ -75,4 +91,13 @@ class Owner(models.Model):
         Flat,
         verbose_name='Квартиры в собственности',
         related_name='owners',
-        blank=True)
+        blank=True,
+        db_index=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Владелец'
+        verbose_name_plural = 'Владельцы'
+        ordering = ['name']
