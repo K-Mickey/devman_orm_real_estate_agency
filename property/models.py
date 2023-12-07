@@ -68,3 +68,10 @@ class Complaint(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE, related_name='complaints')
     text = models.TextField()
+
+
+class Owner(models.Model):
+    name = models.CharField('ФИО владельца', max_length=200)
+    phone_number = models.CharField('Номер владельца', max_length=20)
+    pure_phone = modelfields.PhoneNumberField('Нормализованный номер владельца', blank=True, null=True)
+    flat = models.ManyToManyField(Flat, verbose_name='Квартиры в собственности', related_name='owners')
