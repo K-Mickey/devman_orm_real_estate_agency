@@ -5,11 +5,13 @@ from django.db import migrations
 
 def fill_pure_numbers(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
-    for flat in Flat.objects.all():
-        parse_number = phonenumbers.parse(flat.owners_phonenumber, "RU")
-        if phonenumbers.is_valid_number(parse_number):
-            flat.owner_pure_phone = f"+7{parse_number.national_number}"
-            flat.save()
+    flats = Flat.objects.all()
+    if flats.exists():
+        for flat in flats.iterator():
+            parse_number = phonenumbers.parse(flat.owners_phonenumber, "RU")
+            if phonenumbers.is_valid_number(parse_number):
+                flat.owner_pure_phone = f'+{parse_number.country_code}{parse_number.national_number}'
+                flat.save()
 
 
 def move_backward(apps, schema_editor):

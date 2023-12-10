@@ -5,9 +5,7 @@ from django.db import migrations
 
 def fill_new_building(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
-    for flat in Flat.objects.all():
-        flat.new_building = flat.construction_year >= 2015
-        flat.save()
+    Flat.objects.update(new_building=False if Flat.construction_year < 2015 else True)
 
 
 class Migration(migrations.Migration):
